@@ -131,14 +131,14 @@ const SearchProduct = async(req,res)=>{
     
     try {
         const { keyword } = req.params;
-        console.log(keyword)
+        
         const results = await productModel
           .find({
             $or: [
               { productName: { $regex: keyword, $options: "i" } },
               { description: { $regex: keyword, $options: "i" } },
             ],
-            // createdBy : userId
+            
           })
 
           console.log(results)
@@ -153,6 +153,77 @@ const SearchProduct = async(req,res)=>{
         });
       }
 }
+
+
+
+const categoryFilter = async (req,res) =>{
+
+  try{
+   
+     const { checked} = req.body;
+
+     console.log(checked)
+       
+    if(checked.length == 1 && checked.includes("Others")){
+     
+      let values = ["electronics","cloths","toys"]
+      const datas = await productModel.find(
+           {
+            categoryName:{$nin: values},
+          
+          });
+      res.status(200).send({success: true,datas});
+      
+    }
+    else if(checked.length > 0 && !checked.includes("Others")){
+     
+      const datas = await productModel.find({categoryName:{$in: checked}});
+      console.log(datas)
+      res.status(200).send({success: true,datas});
+    }
+    else if(checked.length == 0){
+      
+      const datas = await productModel.find({});
+      res.status(200).send({success: true,datas}); 
+
+    }else{
+         const datas = await productModel.find({categoryName:{$in: checked}});
+          console.log(datas)
+          res.status(200).send({success: true,datas});
+    
+          } 
+    }
+
+    // if(checked.length == 1 && checked.includes("Others")){
+     
+    //     let values = ["electronics","cloths","toys"]
+    //     const datas = await productModel.find(
+    //          {
+    //           categoryName:{$nin: values},
+            
+    //         });
+    //     res.status(200).send({success: true,datas});
+        
+    //   }else{
+
+    //   const datas = await productModel.find({categoryName:{$in: checked}});
+    //   console.log(datas)
+    //   res.status(200).send({success: true,datas});
+
+    //   } 
+ 
+  catch(error){
+    
+    console.log(error);
+    res.status(400).send({
+
+      success: false,
+      message:"Error while filter the products",
+      error
+    })
+}
+}
+
 
 
 
@@ -171,4 +242,4 @@ const SearchProduct = async(req,res)=>{
 
 // }
 
-module.exports = {createProduct,getAllProducts,findSingleProduct,updateProduct,SearchProduct};
+module.exports = {createProduct,getAllProducts,findSingleProduct,updateProduct,SearchProduct,categoryFilter};

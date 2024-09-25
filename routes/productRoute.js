@@ -7,7 +7,7 @@ const cloudinary = require("cloudinary").v2;
 const {CloudinaryStorage} = require("multer-storage-cloudinary")
 const multer = require("multer")
 
-const {createProduct,getAllProducts,findSingleProduct} = require("../Controller/productController");
+const {createProduct,getAllProducts,findSingleProduct, categoryFilter} = require("../Controller/productController");
 const { updateProduct } = require("../Controller/productController");
 const { SearchProduct } = require("../Controller/productController");
 
@@ -34,5 +34,6 @@ router.get("/getAll",getAllProducts)
 router.get("/singleProduct/:id",findSingleProduct)
 router.put("/:id",upload.single("file"),updateProduct)
 router.get("/search/:keyword",SearchProduct)
+router.post("/product-filter",categoryFilter);
 
 module.exports = router;
